@@ -1,0 +1,36 @@
+{
+	"title_id3tag": "Title",
+	"artist_id3tag": "Artist",
+	"album_id3tag": "Album",
+	"albumartist_id3tag": "Album Artist",
+	"tracknumber_id3tag": "Track number",
+	"date_id3tag": "Release Year",
+
+	"bpm_id3tag": "BPM",
+	"mood_id3tag": "Mood",
+	"language_id3tag": "Language",
+	"genre_id3tag": "Genre",
+
+	"settings_menu": "Settings",
+	"exit_program": "QUIT",
+	"change_lang": "Change language",
+	"back_to_prev_menu": "BACK",
+	"danger_zone": "Danger Zone",
+
+	"clear_total_cache": "Clear cache",
+	"clear_mp4_cache": "Clear MP4 cache",
+	"clear_album_cover_cache": "Clear album cover cache",
+	"clear_downloads": "Delete downloaded MP3s",
+	"exit_input": "┌──(QUIT? [y/N])\n└─$  ",
+	"input_clear_cache": "┌──(CLEAR? (all data will be lost) [y/N])\n└─$  ",
+	"input_video_url": "┌──(please enter the video URL)\n└─$ ",
+	"input_language_select": "┌──(select the language ([enter] to cancel))\n└─$ ",
+	"input_menu_select": "┌──(select an option) - [{menu}]\n└─$ ",
+	"download_menu": "Downloads",
+	"download_video_playlist": "Download video playlist",
+	"download_video_single": "Download single video",
+	"download_music_playlist": "Download music playlist",
+	"download_music_single": "Download single song",
+	"yt_music_menu": "YouTube Music (audio)",
+	"youtube_menu": "YouTube (video)"
+}

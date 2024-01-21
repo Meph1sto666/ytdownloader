@@ -1,0 +1,115 @@
+[
+    {
+		"build_function": "menuPointerFromJson",
+		"description": "back_to_prev_menu",
+		"style": {
+			"fore": "magenta",
+			"back": null,
+			"style": null
+		},
+		"next_menu": "main",
+		"prev_menu": "main",
+		"params": {}
+	},
+    {
+		"build_function": "objectExecutableFromJson",
+		"description": "change_lang",
+		"style": {
+			"fore": null,
+			"back": null,
+			"style": null
+		},
+        "function": "setLang",
+		"module": null,
+		"attribute": "settings",
+		"params": {}
+	},
+	{
+		"build_function": "objectExecutableFromJson",
+		"description": "change_audio_codec",
+		"style": {
+			"fore": null,
+			"back": null,
+			"style": null
+		},
+        "function": "setAudioCodec",
+		"module": null,
+		"attribute": "settings",
+		"params": {
+			"codecs": [
+				"m4a",
+				"mp3"
+			]
+		}
+	},
+	{
+		"build_function": "divFromJson",
+		"description": "danger_zone",
+		"style": {
+			"fore": "white",
+			"back": "red",
+			"style": null
+		},
+		"params": {}
+	},
+	{
+		"build_function": "executableFromJson",
+		"description": "clear_total_cache",
+		"style": {
+			"fore": "red",
+			"back": null,
+			"style": null
+		},
+        "function": "clear_cache",
+		"module": "packages.cli.misc",
+		"params": {
+			"settings": true,
+			"folder": "./data/cache/"
+		}
+	},
+	{
+		"build_function": "executableFromJson",
+		"description": "clear_mp4_cache",
+		"style": {
+			"fore": "red",
+			"back": null,
+			"style": null
+		},
+        "function": "clear_cache",
+		"module": "packages.cli.misc",
+		"params": {
+			"settings": true,
+			"folder": "./data/cache/mp4"
+		}
+	},
+	{
+		"build_function": "executableFromJson",
+		"description": "clear_album_cover_cache",
+		"style": {
+			"fore": "red",
+			"back": null,
+			"style": null
+		},
+        "function": "clear_cache",
+		"module": "packages.cli.misc",
+		"params": {
+			"settings": true,
+			"folder": "./data/cache/covers"
+		}
+	},
+	{
+		"build_function": "executableFromJson",
+		"description": "clear_downloads",
+		"style": {
+			"fore": "red",
+			"back": null,
+			"style": null
+		},
+        "function": "clear_cache",
+		"module": "packages.cli.misc",
+		"params": {
+			"settings": true,
+			"folder": "./downloads"
+		}
+	}
+]

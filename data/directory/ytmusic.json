@@ -1,0 +1,42 @@
+[
+    {
+		"build_function": "menuPointerFromJson",
+		"description": "back_to_prev_menu",
+		"style": {
+			"fore": "magenta",
+			"back": null,
+			"style": null
+		},
+		"next_menu": "main",
+		"prev_menu": "main",
+		"params": {}
+	},
+    {
+		"build_function": "executableFromJson",
+		"description": "download_music_playlist",
+		"style": {
+			"fore": "LIGHTGREEN_EX",
+			"back": null,
+			"style": null
+		},
+		"function": "download_music_playlist",
+		"module": "packages.downloader",
+		"params": {
+            "settings": true
+        }
+	},
+    {
+		"build_function": "executableFromJson",
+		"description": "download_music_single",
+		"style": {
+			"fore": "LIGHTGREEN_EX",
+			"back": null,
+			"style": null
+		},
+		"function": "download_music_single",
+		"module": "packages.downloader",
+		"params": {
+            "settings": true
+        }
+	}
+]

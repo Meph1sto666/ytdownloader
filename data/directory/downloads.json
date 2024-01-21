@@ -1,0 +1,42 @@
+[
+    {
+		"build_function": "menuPointerFromJson",
+		"description": "back_to_prev_menu",
+		"style": {
+			"fore": "magenta",
+			"back": null,
+			"style": null
+		},
+		"next_menu": "main",
+		"prev_menu": "main",
+		"params": {}
+	},
+    {
+		"build_function": "executableFromJson",
+		"description": "download_playlist",
+		"style": {
+			"fore": null,
+			"back": null,
+			"style": null
+		},
+		"function": "download_playlist",
+		"module": "packages.downloader",
+		"params": {
+            "settings": true
+        }
+	},
+    {
+		"build_function": "executableFromJson",
+		"description": "download_single",
+		"style": {
+			"fore": null,
+			"back": null,
+			"style": null
+		},
+		"function": "download_single",
+		"module": "packages.downloader",
+		"params": {
+            "settings": true
+        }
+	}
+]

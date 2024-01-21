@@ -1,0 +1,52 @@
+[
+	{
+		"build_function": "executableFromJson",
+		"description": "exit_program",
+		"style": {
+			"fore": null,
+			"back": "red",
+			"style": null
+		},
+		"function": "exit",
+		"module": "packages.cli.menu",
+		"params": {
+			"settings": true
+		}
+	},
+	{
+		"build_function": "menuPointerFromJson",
+		"description": "settings_menu",
+		"style": {
+			"fore": "lightgreen_ex",
+			"back": null,
+			"style": null
+		},
+		"next_menu": "settings",
+		"prev_menu": null,
+		"params": {}
+	},
+	{
+		"build_function": "menuPointerFromJson",
+		"description": "yt_music_menu",
+		"style": {
+			"fore": "cyan",
+			"back": null,
+			"style": null
+		},
+		"next_menu": "ytmusic",
+		"prev_menu": null,
+		"params": {}
+	},
+	{
+		"build_function": "menuPointerFromJson",
+		"description": "youtube_menu",
+		"style": {
+			"fore": "lightred_ex",
+			"back": null,
+			"style": null
+		},
+		"next_menu": "youtube",
+		"prev_menu": null,
+		"params": {}
+	}
+]

@@ -1,0 +1,13 @@
+{
+    "title_id3tag": "Titel",
+    "artist_id3tag": "Künstler",
+    "album_id3tag": "Album",
+    "albumartist_id3tag": "Album Künstler",
+    "tracknumber_id3tag": "Track Nummer",
+    "date_id3tag": "Veröffentlichungsjahr",
+    
+    "bpm_id3tag": "BPM",
+    "mood_id3tag": "Stimmung",
+    "language_id3tag": "Sprache",
+    "genre_id3tag": "Genre"
+}
