@@ -4,8 +4,6 @@ import typing
 from packages.types.settings import Settings
 from packages.cli.misc import clear
 import colorama
-# from pynput import keyboard
-# from pynput.keyboard import Key
 
 class Menu:
 	def __init__(self, name:str, settings:Settings) -> None:
@@ -38,19 +36,27 @@ class Menu:
 	# def highlightUp(self) -> None:
 	# 	if self.highlighted > 0:
 	# 		self.highlighted -= 1
+			
 	# def highlightDown(self) -> None:
-	# 	if self.highlighted < len(self.entries):
+	# 	if self.highlighted < len(self.entries)-1:
 	# 		self.highlighted += 1
 
-	# def select(self, acceptNone:bool=False) -> typing.Any:
+	# def highlight(self, key:(Key|KeyCode|None)) -> None|bool:
+	# 	if key == Key.enter: return False
+	# 	if key in [Key.up, Key.left]:
+	# 		self.highlightUp()
+	# 	if key in [Key.down, Key.right]:
+	# 		self.highlightDown()
+	# 	self.flush()
+
+	# def select(self) -> typing.Any:
 	# 	filtered = list(filter(lambda E: not isinstance(E, DivEntry), self.entries))
-	# 	while True:
-	# 		self.flush()
-	# 		inp:str = input(self.settings.lang.translate("input_menu_select").format(menu=self.name))
-	# 		if inp.isnumeric() and int(inp) < len(filtered): break
-	# 		elif acceptNone: return
+	# 	self.flush()
+	# 	with Listener(on_release=self.highlight) as listener: # type: ignore
+	# 		listener.join()
+	# 	del listener
 	# 	print()
-	# 	return filtered[int(inp)]
+	# 	return filtered[self.highlighted]
 
 	def flush(self) -> None:
 		clear()
@@ -58,7 +64,14 @@ class Menu:
 		e:int = 0
 		resetC:str = colorama.Style.RESET_ALL
 		for i in range(len(self.entries)):
-			c:str = str(self.entries[i].style.fore if self.entries[i].style.fore else "") + str(self.entries[i].style.back if self.entries[i].style.back else "")
+			backC:str = ""
+			# if i == self.highlighted:
+			# 	backC = colorama.Back.LIGHTYELLOW_EX
+			c:str = str(self.entries[i].style.fore if self.entries[i].style.fore else "")
+			if len(backC) > 0:
+				c+=backC
+			else:
+				c+=str(self.entries[i].style.back if self.entries[i].style.back else "")
 			desc:str = self.settings.lang.translate(self.entries[i].description)
 			if isinstance(self.entries[i], DivEntry):
 				print(c + desc.center(20) + resetC)

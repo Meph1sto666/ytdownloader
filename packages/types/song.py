@@ -32,13 +32,13 @@ class Song:
 		self.cover:str = self.getCover(settings.frame_as_cover, settings.thumbnail_size)
 		self.codec:typing.Literal['m4a', 'mp3'] = settings.audio_codec
 
-		self.title:str|None = self.ytmusicSong.get("title")
-		self.artist:str = '; '.join([i['name'] for i in self.ytmusicSong.get('artists')]) # maybe switch back to ' & ' if iTunes makes slashes # type: ignore
-		self.albumId:str|None = self.ytmusicSong.get('album', {}).get("id") if not self.ytmusicSong.get('album') == None else None
+		self.title:str|None = self.ytmusicSong.get("title") # type: ignore
+		self.artist:str = '& '.join([i['name'] for i in self.ytmusicSong.get('artists')]) # maybe switch back to ' & ' if iTunes makes slashes # type: ignore
+		self.albumId:str|None = self.ytmusicSong.get('album', {}).get("id") if not self.ytmusicSong.get('album') == None else None # type: ignore
 		self.explicit:bool = self.ytmusicSong.get('isExplicit') or self.ytvid.age_restricted or getExplicityRating(self.ytvid.initial_data) # type: ignore
 
 		self.year:str = self.ytmusicSong.get('year') or str(self.ytvid.publish_date.year) # type: ignore
-		self.albumMetadata:MetaAlbum|None = MetaAlbum(self.albumId) if self.albumId != None else None
+		self.albumMetadata:MetaAlbum|None = MetaAlbum(self.albumId) if self.albumId != None else None # type: ignore
 		self.trackPosition:int|None = self.albumMetadata.getTrackPos(self.title, self.ytvid.video_id) if self.albumId != None else None # type: ignore
 		if settings.add_lyrics:
 			self.lyrics:dict[str, str|None]|None = self.searchLyrics()
@@ -63,10 +63,10 @@ class Song:
 		self.__update(settings)
 		self.title = self.ytmusicSong.get("title")
 		self.artist = '; '.join([i['name'] for i in self.ytmusicSong.get('artists')]) # type: ignore maybe switch back to ' & ' if iTunes makes slashes
-		self.albumId = self.ytmusicSong.get('album', {}).get("id")
-		self.explicit = self.ytmusicSong.get('isExplicit') or self.ytvid.age_restricted
+		self.albumId = self.ytmusicSong.get('album', {}).get("id") # type: ignore
+		self.explicit = self.ytmusicSong.get('isExplicit') or self.ytvid.age_restricted # type: ignore
 		self.year = self.ytmusicSong.get('year') or str(self.ytvid.publish_date.year) # type: ignore
-		self.albumMetadata = MetaAlbum(self.albumId) if self.albumId != None else None
+		self.albumMetadata = MetaAlbum(self.albumId) if self.albumId != None else None # type: ignore
 		self.cover = self.getCover(settings.frame_as_cover, settings.thumbnail_size)
 		self.__downloadpath = settings.audio_download_path
 
@@ -125,7 +125,7 @@ class Song:
 	def convert(self) -> None:
 		# FFmpeg().input(self.__vidCache, self.ytvid.video_id+".mp4").output("./downloads/", self.ytvid.video_id+".mp3").execute()
 		print(self.ytvid.video_id, "convert")
-		FFmpeg().option("y").input(self.__vidCache + self.ytvid.video_id + ".mp4").output(self.__downloadpath + self.filename + f".{self.codec}").execute() # type: ignore
+		FFmpeg("./lib/ffmpeg.exe").option("y").input(self.__vidCache + self.ytvid.video_id + ".mp4").output(self.__downloadpath + self.filename + f".{self.codec}").execute() # type: ignore
 	
 	def addCover(self) -> None:
 		# if not os.path.exists(mp3File): return;

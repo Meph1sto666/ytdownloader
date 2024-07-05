@@ -1,0 +1,7 @@
+colorama
+requests
+ytmusicapi
+pytube
+python-ffmpeg
+mutagen
+lrclibapi

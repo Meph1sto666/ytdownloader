@@ -23,8 +23,10 @@ def beautifyFSize(sizeByte:int, roundDecimal:int=2) -> str:
 
 def createHeader() -> str:
 	cacheFiles:list[str] = getAllFilesRecursively("./data/cache")
+	os.makedirs("./data/cache", exist_ok=True)
 	cacheSize:int = sum([os.path.getsize(f) for f in cacheFiles])
 	downloadFiles:list[str] = getAllFilesRecursively("./downloads")
+	os.makedirs("./downloads", exist_ok=True)
 	downloadSize:int = sum([os.path.getsize(f) for f in downloadFiles])
 
 	header:str = f"CACHE: [{beautifyFSize(cacheSize)}] DOWNLOADS: [{beautifyFSize(downloadSize)}]"

@@ -2,6 +2,7 @@ import pickle
 import typing
 import colorama
 from packages.types.lang import Lang, getAvailableLangs
+# from pynput.keyboard import Key, Listener, KeyCode
 
 class Settings:
 	"""
@@ -25,6 +26,40 @@ class Settings:
 
 		self.illegal_characters_regex:str = r'[^_\-\w\d]'
 		self.illegal_characters_regex_replace_string:str = '-'
+
+		# self.highlighted:int = 0
+
+	# def highlightUp(self) -> None:
+	# 	if self.highlighted > 0:
+	# 		self.highlighted -= 1
+			
+	# def highlightDown(self, amount:int) -> None:
+	# 	if self.highlighted < amount-1:
+	# 		self.highlighted += 1
+
+	# def highlight(self, key:(Key|KeyCode|None), amount:int, flushFunc) -> None|bool:
+	# 	if key == Key.enter: return False
+	# 	if key in [Key.up, Key.left]:
+	# 		self.highlightUp()
+	# 	if key in [Key.down, Key.right]:
+	# 		self.highlightDown(amount)
+	# 	flushFunc()
+
+	# def langFlush(self) -> None:
+	# 	langs:list[str] = getAvailableLangs()
+	# 	pad:int = len(str(len(langs)))
+	# 	for l in range(len(langs)):
+	# 		print((colorama.Back.WHITE if langs[l].removesuffix(".json") == self.getLangName() else colorama.Back.RESET) + f"[{str(l).rjust(pad)}] {langs[l].removesuffix('.json')}" + colorama.Back.RESET)
+
+	# def setLang(self) -> None:
+	# 	self.langFlush()
+	# 	langs:list[str] = getAvailableLangs()
+	# 	with Listener(on_release=self.highlight, kwargs={"amount":len(langs), "flushFunc":self.langFlush}) as listener: # type: ignore
+	# 		listener.join()
+
+	# 	# if inp.isnumeric() and int(inp) < len(langs):
+	# 	self.lang.lang = langs[self.highlighted].removesuffix(".json")
+	# 	self.highlighted = 0
 
 	def setLang(self) -> None:
 		langs:list[str] = getAvailableLangs()
