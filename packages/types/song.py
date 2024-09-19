@@ -121,7 +121,6 @@ class Song:
 
 	def download(self) -> None:
 		# print(self.ytvid.video_id, "download", self.ytvid.streams.get_audio_only().filesize) # type: ignore
-		yt_dlp
 		with yt_dlp.YoutubeDL(
 			{
 				'format': 'best',
@@ -129,7 +128,7 @@ class Song:
 			}
 		) as ydl:
 			print(self.ytvid.watch_url)
-			i = ydl.download(self.ytvid.watch_url)
+			ydl.download(self.ytvid.watch_url)
 			# self.ytvid.streams.get_audio_only().download(self.__vidCache, self.ytvid.video_id + ".mp4") # type: ignore
 
 	def convert(self) -> None:

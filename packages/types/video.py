@@ -2,6 +2,7 @@ import os
 import pytube # type: ignore
 from packages.types.settings import Settings
 import re
+import yt_dlp
 
 class Video:
 	def __init__(self, url:str, settings:Settings) -> None:
@@ -17,5 +18,13 @@ class Video:
 		}
 
 	def download(self) -> None:
-		print(self.ytvid.video_id, "download", self.ytvid.streams.get_highest_resolution().filesize) # type: ignore
-		self.ytvid.streams.get_highest_resolution().download(self.downloadpath, self.filename + ".mp4") # type: ignore
+		with yt_dlp.YoutubeDL(
+			{
+				'format': 'best',
+				"outtmpl": f"{self.downloadpath}{self.filename}.mp4" #self.__vidCache + "/" + self.ytvid.video_id + ".mp4"
+			}
+		) as ydl:
+			ydl.download(self.ytvid.watch_url)
+
+		# print(self.ytvid.video_id, "download", self.ytvid.streams.get_highest_resolution().filesize) # type: ignore
+		# self.ytvid.streams.get_highest_resolution().download(self.downloadpath, self.filename + ".mp4") # type: ignore
