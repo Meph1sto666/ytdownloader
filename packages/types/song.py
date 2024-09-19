@@ -13,6 +13,7 @@ from mutagen.mp3 import MP3;
 from mutagen.mp4 import MP4, MP4Cover
 from mutagen.easyid3 import EasyID3
 import lrclib.api # type: ignore
+import yt_dlp
 lrclibapi = lrclib.api.LrcLibAPI("urmum")
 
 class Song:
@@ -119,13 +120,26 @@ class Song:
 		print(a, i)
 
 	def download(self) -> None:
-		print(self.ytvid.video_id, "download", self.ytvid.streams.get_audio_only().filesize) # type: ignore
-		self.ytvid.streams.get_audio_only().download(self.__vidCache, self.ytvid.video_id + ".mp4") # type: ignore
+		# print(self.ytvid.video_id, "download", self.ytvid.streams.get_audio_only().filesize) # type: ignore
+		yt_dlp
+		with yt_dlp.YoutubeDL(
+			{
+				'format': 'best',
+				"outtmpl": f"{self.__vidCache}{self.ytvid.video_id}.mp4" #self.__vidCache + "/" + self.ytvid.video_id + ".mp4"
+			}
+		) as ydl:
+			print(self.ytvid.watch_url)
+			i = ydl.download(self.ytvid.watch_url)
+			# self.ytvid.streams.get_audio_only().download(self.__vidCache, self.ytvid.video_id + ".mp4") # type: ignore
 
 	def convert(self) -> None:
 		# FFmpeg().input(self.__vidCache, self.ytvid.video_id+".mp4").output("./downloads/", self.ytvid.video_id+".mp3").execute()
 		print(self.ytvid.video_id, "convert")
-		FFmpeg("./lib/ffmpeg.exe").option("y").input(self.__vidCache + self.ytvid.video_id + ".mp4").output(self.__downloadpath + self.filename + f".{self.codec}").execute() # type: ignore
+		if os.path.exists("./lib/ffmpeg.exe"):
+			FFmpeg("./lib/ffmpeg.exe").option("y").input(self.__vidCache + self.ytvid.video_id + ".mp4").output(self.__downloadpath + self.filename + f".{self.codec}").execute() # type: ignore
+		else:
+			FFmpeg().option("y").input(self.__vidCache + self.ytvid.video_id + ".mp4").output(self.__downloadpath + self.filename + f".{self.codec}").execute() # type: ignore
+	
 	
 	def addCover(self) -> None:
 		# if not os.path.exists(mp3File): return;
@@ -199,10 +213,7 @@ class Song:
 		"""
 			automatically convert metadata and cover
 		"""
-		try:
-			self.download()
-		except Exception as e:
-			raise e
+		self.download()
 		self.convert()
 		self.addMetadata()
 		self.addCover()
