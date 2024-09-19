@@ -5,3 +5,4 @@ pytube
 python-ffmpeg
 mutagen
 lrclibapi
+yt-dlp
