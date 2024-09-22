@@ -63,7 +63,7 @@ class Song:
 	def update(self, settings:Settings) -> None:
 		self.__update(settings)
 		self.title = self.ytmusicSong.get("title")
-		self.artist = '; '.join([i['name'] for i in self.ytmusicSong.get('artists')]) # type: ignore maybe switch back to ' & ' if iTunes makes slashes
+		self.artist = ' & '.join([i['name'] for i in self.ytmusicSong.get('artists')]) # type: ignore maybe switch back to ' & ' if iTunes makes slashes
 		self.albumId = self.ytmusicSong.get('album', {}).get("id") # type: ignore
 		self.explicit = self.ytmusicSong.get('isExplicit') or self.ytvid.age_restricted # type: ignore
 		self.year = self.ytmusicSong.get('year') or str(self.ytvid.publish_date.year) # type: ignore

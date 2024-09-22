@@ -10,7 +10,7 @@ class MetaAlbum:
 		albuminfo:dict[typing.Any, typing.Any] = ytmusicapi.YTMusic().get_album(albumId) # type: ignore
 		self.album:str|None = albuminfo.get("title")
 		self.trackCount:int|None = albuminfo.get("trackCount")
-		self.albumArtist:str|None = '; '.join([a.get("name") for a in (albuminfo.get("artists"))]) # back to ' & ' if it doesn't work properly # type: ignore
+		self.albumArtist:str|None = ' & '.join([a.get("name") for a in (albuminfo.get("artists"))]) # back to ' & ' if it doesn't work properly # type: ignore
 		self.albumYear:str|None = albuminfo.get("year")
 		self.tracks:list[tuple[str, str]] = [(t.get("videoId"), t.get("title")) for t in albuminfo.get("tracks")] # type: ignore
 
