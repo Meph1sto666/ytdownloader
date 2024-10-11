@@ -9,11 +9,6 @@ IF NOT EXIST .\venv\ (
 	)
 	ECHO VENV CREATED
 )
-IF NOT EXIST .\lib\ffmpeg.exe (
-	ECHO [31mFFMPEG IS MISSING[0m: please put ffmpeg.exe into .\lib\ffmpeg.exe
-	PAUSE
-	EXIT
-)
 
 CALL .\venv\Scripts\activate
 pip install -r .\requirements.txt

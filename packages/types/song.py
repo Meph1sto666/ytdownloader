@@ -1,8 +1,9 @@
 import os
 import typing
 import requests
+import tqdm
 import ytmusicapi # type: ignore
-import pytube # type: ignore
+import pytubefix as pytube # type: ignore
 import difflib
 import re
 from packages.types.album import MetaAlbum
@@ -13,7 +14,8 @@ from mutagen.mp3 import MP3;
 from mutagen.mp4 import MP4, MP4Cover
 from mutagen.easyid3 import EasyID3
 import lrclib.api # type: ignore
-import yt_dlp
+import colorama
+colorama.init(autoreset=True)
 lrclibapi = lrclib.api.LrcLibAPI("urmum")
 
 class Song:
@@ -21,20 +23,24 @@ class Song:
 		song class for downloading from yt, converting and setting metadata if found
 	"""
 	def __init__(self, url:str, settings:Settings) -> None:
+		# self.downloaded = False
 		self.__downloadpath:str = settings.audio_download_path
 		self.__vidCache:str = './data/cache/mp4/'
 		self.__coverCache:str = './data/cache/covers/'
+		self.codec:typing.Literal['m4a', 'mp3'] = settings.audio_codec
 		for p in [self.__downloadpath, self.__vidCache, self.__coverCache]:
 			os.makedirs(p, exist_ok=True)
-		
-		self.ytvid = pytube.YouTube(url, self.__callback) # type: ignore
+		# if os.path.exists(self.__downloadpath + self.filename + f".{self.codec}"):
+		# 	self.downloaded = True
+		# 	return
+		self.ytvid: pytube.YouTube = pytube.YouTube(url) # type: ignore
 		self.ytmusicSong:dict[str, str|None] = list(ytmusicapi.YTMusic().get_watch_playlist(self.ytvid.video_id, limit=1).get("tracks"))[0] # type: ignore
 		self.__update(settings)
-		self.cover:str = self.getCover(settings.frame_as_cover, settings.thumbnail_size)
-		self.codec:typing.Literal['m4a', 'mp3'] = settings.audio_codec
 
 		self.title:str|None = self.ytmusicSong.get("title") # type: ignore
-		self.artist:str = '& '.join([i['name'] for i in self.ytmusicSong.get('artists')]) # maybe switch back to ' & ' if iTunes makes slashes # type: ignore
+		self.artist:str = ' & '.join([i['name'] for i in self.ytmusicSong.get('artists')]) # maybe switch back to ' & ' if iTunes makes slashes # type: ignore
+		self.cover:str = self.getCover(settings.frame_as_cover, settings.thumbnail_size)
+
 		self.albumId:str|None = self.ytmusicSong.get('album', {}).get("id") if not self.ytmusicSong.get('album') == None else None # type: ignore
 		self.explicit:bool = self.ytmusicSong.get('isExplicit') or self.ytvid.age_restricted or getExplicityRating(self.ytvid.initial_data) # type: ignore
 
@@ -79,7 +85,8 @@ class Song:
 				self.ytvid:pytube.YouTube = self.ytvid.from_id(searchRes.get("videoId")) # type: ignore
 
 	def __search_song(self, settings:Settings) -> dict[str, typing.Any]|None:
-		print(self.ytvid.video_id, "__search_song")
+		# pbar = tqdm.tqdm(leave=False)
+		# pbar.write(self.ytvid.video_id + " __search_song")
 		ogTitles:list[str] = [
 			f"{getVideoChannelName(self.ytvid.initial_data)} - {getVideoTitle(self.ytvid.initial_data)}", # type: ignore
 			f"{''.join([i['name'] for i in self.ytmusicSong.get('artists')])} - {self.ytmusicSong.get('title')}" # type: ignore
@@ -90,7 +97,7 @@ class Song:
 			for i in range(len(found)):
 				vidTitInf:str = f"{''.join([i['name'] for i in found[i].get('artists')])} - {found[i].get('title')}" # type: ignore
 				score:float = difflib.SequenceMatcher(None, originalTitle.lower(), vidTitInf.lower()).ratio()
-				print(originalTitle, "///", vidTitInf, "///", score)
+				# pbar.write(str(originalTitle) + " /// " + str(vidTitInf) + " /// " + str(score))
 				if score >= settings.song_diffing_threshold and (found[i].get('videoType') == "MUSIC_VIDEO_TYPE_ATV"):
 					return found[i]
 
@@ -98,6 +105,7 @@ class Song:
 		"""
 			fetches the thumbnail of the song and downloads it to ./data/cache/covers
 		"""
+		# pbar = tqdm.tqdm(leave=False)
 		file:str = f"{self.__coverCache}{self.ytvid.video_id}.jpg"
 		if not useFrame:
 			thumbnailUrl:str = (self.ytmusicSong.get("thumbnail") or self.ytmusicSong.get("thumbnails"))[0]["url"] # type: ignore
@@ -109,31 +117,40 @@ class Song:
 				depth:int = 1024
 				if size > 512:
 					thumbnailUrl += f"=w{size}-h{size}-l{depth}-rj"
-			print(self.ytvid.video_id, thumbnailUrl)
+			# pbar.write(self.ytvid.video_id + " " + thumbnailUrl)
 			open(file, "wb").write(requests.get(thumbnailUrl).content) # type: ignore
 		return file
 
 	def is_song(self) -> bool:
 		return self.ytmusicSong.get("videoType") != "MUSIC_VIDEO_TYPE_ATV"
 
-	def __callback(self, a:typing.Any, b:bytes, i:int) -> None:
-		print(a, i)
-
 	def download(self) -> None:
 		# print(self.ytvid.video_id, "download", self.ytvid.streams.get_audio_only().filesize) # type: ignore
-		with yt_dlp.YoutubeDL(
-			{
-				'format': 'best',
-				"outtmpl": f"{self.__vidCache}{self.ytvid.video_id}.mp4" #self.__vidCache + "/" + self.ytvid.video_id + ".mp4"
-			}
-		) as ydl:
-			print(self.ytvid.watch_url)
-			ydl.download(self.ytvid.watch_url)
-			# self.ytvid.streams.get_audio_only().download(self.__vidCache, self.ytvid.video_id + ".mp4") # type: ignore
+		# with yt_dlp.YoutubeDL(
+		# 	{
+		# 		'format': 'best',
+		# 		"outtmpl": f"{self.__vidCache}{self.ytvid.video_id}.mp4" #self.__vidCache + "/" + self.ytvid.video_id + ".mp4"
+		# 	}
+		# ) as ydl:
+		# 	print(colorama.Fore.GREEN + self.ytvid.watch_url)
+		# 	ydl.download(self.ytvid.watch_url)
+		try:
+			stream: pytube.Stream | None = self.ytvid.streams.get_audio_only()
+		except:
+			raise BaseException
+			# print(self.ytvid.video_id + " could not download audio")
+			# stream: pytube.Stream | None = self.ytvid.streams.get_highest_resolution()
+		if not stream: return
+		# pbar = tqdm.tqdm(total=stream.filesize, unit='B', unit_scale=True, desc=self.ytvid.video_id, ascii=".#", leave=False)
+		# def __callback(stream: typing.Any, chunk: bytes, bytes_remaining: int) -> None:
+		# 	pbar.update(len(chunk))
+		# self.ytvid.register_on_progress_callback(__callback)
+		stream.download(self.__vidCache, self.ytvid.video_id + ".mp4") # type: ignore
+		
 
 	def convert(self) -> None:
 		# FFmpeg().input(self.__vidCache, self.ytvid.video_id+".mp4").output("./downloads/", self.ytvid.video_id+".mp3").execute()
-		print(self.ytvid.video_id, "convert")
+		# pbar.write(self.ytvid.video_id + " convert")
 		if os.path.exists("./lib/ffmpeg.exe"):
 			FFmpeg("./lib/ffmpeg.exe").option("y").input(self.__vidCache + self.ytvid.video_id + ".mp4").output(self.__downloadpath + self.filename + f".{self.codec}").execute() # type: ignore
 		else:
@@ -142,7 +159,7 @@ class Song:
 	
 	def addCover(self) -> None:
 		# if not os.path.exists(mp3File): return;
-		print(self.ytvid.video_id, "addCover")
+		# pbar.write(self.ytvid.video_id + " addCover")
 		if self.codec == 'mp3':
 			audio = MP3(self.__downloadpath + self.filename + ".mp3", ID3=ID3)
 			audio.tags.add(APIC(mime='image/jpeg',type=3,desc=u'Cover',data=open(f"{self.__coverCache}{self.ytvid.video_id}.jpg",'rb').read())) # type: ignore
@@ -161,7 +178,7 @@ class Song:
 
 	def addMetadata(self) -> None:
 		# if not self.is_song(): return
-		print(self.ytvid.video_id, "addMetadata")
+		# pbar.write(self.ytvid.video_id + " addMetadata")
 		if self.codec == 'mp3':
 			audio = EasyID3(self.__downloadpath + self.filename + ".mp3")
 			audio["date"] = [self.year]
@@ -212,10 +229,24 @@ class Song:
 		"""
 			automatically convert metadata and cover
 		"""
-		self.download()
-		self.convert()
-		self.addMetadata()
-		self.addCover()
+		pbar = tqdm.tqdm(leave=False, total=4, desc=f"{self.ytvid.video_id}", ascii=".#", colour="#00ffff")
+		if os.path.exists(self.__downloadpath + self.filename + f".{self.codec}"):
+			pbar.write(f"{self.ytvid.video_id}: {colorama.Fore.MAGENTA}ALREADY DOWNLOADED")
+			return
+		pbar.write(f"{self.ytvid.video_id}: {colorama.Fore.YELLOW}DOWNLOAD start")
+		try:
+			self.download(); pbar.update(); pbar.colour = "#ff00ff"
+		except:
+			pbar.write(f"{self.ytvid.video_id}: {colorama.Fore.RED}DOWNLOAD ERROR")
+			return
+		pbar.write(f"{self.ytvid.video_id}: CONVERT start")
+		self.convert(); pbar.update()
+		pbar.write(f"{self.ytvid.video_id}: ADDING METADATA start")
+		self.addMetadata(); pbar.update(); pbar.colour = "#00ff00"
+		pbar.write(f"{self.ytvid.video_id}: ADDING COVER")
+		self.addCover(); pbar.update()
+		pbar.write(f"{self.ytvid.video_id}: {colorama.Fore.LIGHTGREEN_EX}DONE")
+
 def getVideoTitle(vidData:dict[str, typing.Any]) -> str:
 	return vidData["contents"]["twoColumnWatchNextResults"]["results"]["results"]["contents"][0]["videoPrimaryInfoRenderer"]["title"]["runs"][0]["text"]
 def getVideoChannelName(vidData:dict[str, typing.Any]) -> str:

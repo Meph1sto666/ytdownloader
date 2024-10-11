@@ -1,8 +1,8 @@
 colorama
 requests
 ytmusicapi
-pytube
 python-ffmpeg
 mutagen
 lrclibapi
-yt-dlp
+tqdm
+pytubefix
